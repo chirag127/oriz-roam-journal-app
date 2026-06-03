@@ -1,80 +1,80 @@
 name: Deploy to Firebase Hosting
 
 "on":
-	push:
-		branches: [main]
-	workflow_dispatch:
+    push:
+        branches: [main]
+    workflow_dispatch:
 
 concurrency:
-	group: deploy-${{ github.ref }}
-	cancel-in-progress: false
+    group: deploy-${{ github.ref }}
+    cancel-in-progress: false
 
 jobs:
-	build:
-		name: Build
-		runs-on: ubuntu-latest
-		timeout-minutes: 15
-		steps:
-			- uses: actions/checkout@v4
+    build:
+        name: Build
+        runs-on: ubuntu-latest
+        timeout-minutes: 15
+        steps:
+            - uses: actions/checkout@v4
 
-			- uses: pnpm/action-setup@v4
-				with:
-					version: 10
+            - uses: pnpm/action-setup@v4
+                with:
+                    version: 10
 
-			- uses: actions/setup-node@v4
-				with:
-					node-version: 22
-					cache: pnpm
+            - uses: actions/setup-node@v4
+                with:
+                    node-version: 22
+                    cache: pnpm
 
-			- name: Enable pnpm build scripts
-				run: pnpm config set ignore-scripts false
+            - name: Enable pnpm build scripts
+                run: pnpm config set ignore-scripts false
 
-			- name: Install dependencies
-				run: pnpm install --frozen-lockfile
+            - name: Install dependencies
+                run: pnpm install --frozen-lockfile
 
-			- name: Build static site
-				env:
-					PUBLIC_FIREBASE_API_KEY: ${{ secrets.PUBLIC_FIREBASE_API_KEY }}
-					PUBLIC_FIREBASE_AUTH_DOMAIN: ${{ secrets.PUBLIC_FIREBASE_AUTH_DOMAIN }}
-					PUBLIC_FIREBASE_PROJECT_ID: ${{ secrets.PUBLIC_FIREBASE_PROJECT_ID }}
-					PUBLIC_FIREBASE_STORAGE_BUCKET: ${{ secrets.PUBLIC_FIREBASE_STORAGE_BUCKET }}
-					PUBLIC_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.PUBLIC_FIREBASE_MESSAGING_SENDER_ID }}
-					PUBLIC_FIREBASE_APP_ID: ${{ secrets.PUBLIC_FIREBASE_APP_ID }}
-					PUBLIC_FIREBASE_MEASUREMENT_ID: ${{ secrets.PUBLIC_FIREBASE_MEASUREMENT_ID }}
-				run: pnpm build
+            - name: Build static site
+                env:
+                    PUBLIC_FIREBASE_API_KEY: ${{ secrets.PUBLIC_FIREBASE_API_KEY }}
+                    PUBLIC_FIREBASE_AUTH_DOMAIN: ${{ secrets.PUBLIC_FIREBASE_AUTH_DOMAIN }}
+                    PUBLIC_FIREBASE_PROJECT_ID: ${{ secrets.PUBLIC_FIREBASE_PROJECT_ID }}
+                    PUBLIC_FIREBASE_STORAGE_BUCKET: ${{ secrets.PUBLIC_FIREBASE_STORAGE_BUCKET }}
+                    PUBLIC_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.PUBLIC_FIREBASE_MESSAGING_SENDER_ID }}
+                    PUBLIC_FIREBASE_APP_ID: ${{ secrets.PUBLIC_FIREBASE_APP_ID }}
+                    PUBLIC_FIREBASE_MEASUREMENT_ID: ${{ secrets.PUBLIC_FIREBASE_MEASUREMENT_ID }}
+                run: pnpm build
 
-			- name: Upload build artifact
-				uses: actions/upload-artifact@v4
-				with:
-					name: dist
-					path: dist
-					retention-days: 7
-					if-no-files-found: error
+            - name: Upload build artifact
+                uses: actions/upload-artifact@v4
+                with:
+                    name: dist
+                    path: dist
+                    retention-days: 7
+                    if-no-files-found: error
 
-	deploy:
-		name: Deploy
-		runs-on: ubuntu-latest
-		timeout-minutes: 10
-		needs: build
-		environment:
-			name: production
-			url: https://oriz-journal.web.app
-		steps:
-			- uses: actions/download-artifact@v4
-				with:
-					name: dist
-					path: dist
+    deploy:
+        name: Deploy
+        runs-on: ubuntu-latest
+        timeout-minutes: 10
+        needs: build
+        environment:
+            name: production
+            url: https://oriz-journal.web.app
+        steps:
+            - uses: actions/download-artifact@v4
+                with:
+                    name: dist
+                    path: dist
 
-			- uses: actions/setup-node@v4
-				with:
-					node-version: 22
+            - uses: actions/setup-node@v4
+                with:
+                    node-version: 22
 
-			- name: Deploy to Firebase Hosting
-				env:
-					FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-					FIREBASE_PROJECT_ID: oriz-journal
-				run: |
-					npx --yes firebase-tools@latest \
-						--project "${FIREBASE_PROJECT_ID}" \
-						--token "${FIREBASE_TOKEN}" \
-						deploy --only hosting, firestore:rules,firestore:indexes
+            - name: Deploy to Firebase Hosting
+                env:
+                    FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+                    FIREBASE_PROJECT_ID: oriz-journal
+                run: |
+                    npx --yes firebase-tools@latest \
+                        --project "${FIREBASE_PROJECT_ID}" \
+                        --token "${FIREBASE_TOKEN}" \
+                        deploy --only hosting, firestore:rules,firestore:indexes
