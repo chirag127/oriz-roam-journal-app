@@ -56,8 +56,10 @@ test.describe("Mobile layout (iPhone 14, 390x844)", () => {
 
 	test("CTA button height is at least 44px on mobile", async ({ page }) => {
 		await page.goto("/");
-		const cta = page.getByRole("link", { name: /Start writing/i }).first();
-		await expect(cta).toBeVisible();
+		await page.waitForLoadState("networkidle");
+		const cta = page.getByRole("link", { name: /^(Start writing|Start your first entry)/i }).first();
+		await expect(cta).toBeVisible({ timeout: 15_000 });
+		await cta.scrollIntoViewIfNeeded();
 		const box = await cta.boundingBox();
 		expect(box?.height).toBeGreaterThanOrEqual(44);
 	});

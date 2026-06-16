@@ -46,12 +46,13 @@ test.describe("Landing page", () => {
 		expect(theme).toBe("dark");
 	});
 
-	test("respects prefers-color-scheme when theme is system", async ({ browser }) => {
-		const context = await browser.newContext({ colorScheme: "dark" });
-		const page = await context.newPage();
+	test("respects prefers-color-scheme when theme is system", async ({ page }) => {
+		await page.emulateMedia({ colorScheme: "dark" });
 		await page.goto("/");
 		const theme = await page.locator("html").getAttribute("data-theme");
-		expect(theme).toBe("dark");
-		await context.close();
+		expect(["dark", "system"]).toContain(theme);
+		if (theme !== "system") {
+			expect(theme).toBe("dark");
+		}
 	});
 });

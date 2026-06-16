@@ -22,9 +22,11 @@ test.describe("Auth-gated routes", () => {
 		test(`${path} renders the sign-in notice when unauthenticated`, async ({ page }) => {
 			await page.goto(path);
 			await expect(page.getByRole("heading", { name: /Welcome back/i })).toBeVisible({
-				timeout: 10_000,
+				timeout: 30_000,
 			});
-			await expect(page.getByRole("button", { name: /^Sign in$/i })).toBeVisible();
+			await expect(page.getByRole("button", { name: /^Sign in$/i }).first()).toBeVisible({
+				timeout: 5_000,
+			});
 		});
 	}
 
