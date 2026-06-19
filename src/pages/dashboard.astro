@@ -1,0 +1,7 @@
+---
+import AppPage from '~/layouts/AppPage.astro'
+import { DashboardPage } from '~/components/AppPages'
+---
+<AppPage title="Dashboard — Journal" heading="Dashboard" lede="Today, your streak, and your recent entries.">
+  <DashboardPage client:only="react" />
+</AppPage>

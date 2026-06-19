@@ -1,57 +1,37 @@
 {
-	"indexes": [
-		{
-			"collectionGroup": "entries",
-			"queryScope": "COLLECTION",
-			"fields": [
-				{ "fieldPath": "userId", "order": "ASCENDING" },
-				{ "fieldPath": "entryDate", "order": "DESCENDING" }
-			]
-		},
-		{
-			"collectionGroup": "entries",
-			"queryScope": "COLLECTION",
-			"fields": [
-				{ "fieldPath": "userId", "order": "ASCENDING" },
-				{ "fieldPath": "journalType", "order": "ASCENDING" },
-				{ "fieldPath": "entryDate", "order": "DESCENDING" }
-			]
-		},
-		{
-			"collectionGroup": "entries",
-			"queryScope": "COLLECTION",
-			"fields": [
-				{ "fieldPath": "userId", "order": "ASCENDING" },
-				{ "fieldPath": "mood", "order": "ASCENDING" },
-				{ "fieldPath": "entryDate", "order": "DESCENDING" }
-			]
-		},
-		{
-			"collectionGroup": "entries",
-			"queryScope": "COLLECTION",
-			"fields": [
-				{ "fieldPath": "userId", "order": "ASCENDING" },
-				{ "fieldPath": "favorite", "order": "ASCENDING" },
-				{ "fieldPath": "entryDate", "order": "DESCENDING" }
-			]
-		},
-		{
-			"collectionGroup": "entries",
-			"queryScope": "COLLECTION",
-			"fields": [
-				{ "fieldPath": "userId", "order": "ASCENDING" },
-				{ "fieldPath": "pinned", "order": "ASCENDING" },
-				{ "fieldPath": "updatedAt", "order": "DESCENDING" }
-			]
-		},
-		{
-			"collectionGroup": "entries",
-			"queryScope": "COLLECTION",
-			"fields": [
-				{ "fieldPath": "userId", "order": "ASCENDING" },
-				{ "fieldPath": "entryDate", "order": "ASCENDING" }
-			]
-		}
-	],
-	"fieldOverrides": []
+  "indexes": [
+    {
+      "collectionGroup": "entries",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "favorite", "order": "ASCENDING" },
+        { "fieldPath": "entryDate", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "entries",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "pinned", "order": "ASCENDING" },
+        { "fieldPath": "updatedAt", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "entries",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "journalType", "order": "ASCENDING" },
+        { "fieldPath": "entryDate", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "entries",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "mood", "order": "ASCENDING" },
+        { "fieldPath": "entryDate", "order": "DESCENDING" }
+      ]
+    }
+  ],
+  "fieldOverrides": []
 }

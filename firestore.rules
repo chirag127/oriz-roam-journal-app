@@ -1,99 +1,77 @@
 rules_version = '2';
 
+// Firestore rules for oriz-journal — owner-only writes; no public reads.
+// Mirrors the data shape documented in src/lib/types.ts.
+
 service cloud.firestore {
-	match /databases/{database}/documents {
+  match /databases/{database}/documents {
 
-		function isSignedIn() {
-			return request.auth != null;
-		}
+    function isSignedIn() { return request.auth != null; }
+    function isOwner(uid) { return isSignedIn() && request.auth.uid == uid; }
+    function hasOnly(fields) { return request.resource.data.keys().hasOnly(fields); }
 
-		function isOwner(uid) {
-			return isSignedIn() && request.auth.uid == uid;
-		}
+    // Profile doc lives at /users/{uid}.
+    match /users/{uid} {
+      allow read: if isOwner(uid);
+      allow write: if isOwner(uid)
+        && hasOnly([
+          'email','displayName','photoURL','isAnonymous',
+          'createdAt','updatedAt',
+          'defaultJournalType','timezone',
+          'weatherEnabled','e2eeEnabled','e2eeSalt'
+        ]);
+      allow delete: if isOwner(uid);
+    }
 
-		function hasOnlyAllowedFields(fields) {
-			return request.resource.data.keys().hasOnly(fields);
-		}
+    match /users/{uid}/entries/{entryId} {
+      allow read: if isOwner(uid);
+      allow create, update: if isOwner(uid)
+        && hasOnly([
+          'title','body','bodyHtml',
+          'mood','moodIntensity','tags',
+          'journalType','entryDate',
+          'createdAt','updatedAt',
+          'favorite','pinned','isDraft',
+          'wordCount','photoUrls','weather',
+          'encrypted','encryptedNonce'
+        ])
+        && request.resource.data.title is string
+        && request.resource.data.entryDate is string;
+      allow delete: if isOwner(uid);
+    }
 
-		// Public user profile (only self-readable/writable)
-		match /users/{uid} {
-			allow read, write: if isOwner(uid)
-				&& hasOnlyAllowedFields([
-					'email', 'displayName', 'photoURL', 'isAnonymous',
-					'createdAt', 'defaultJournalType', 'timezone', 'updatedAt'
-				]);
-		}
+    match /users/{uid}/templates/{templateId} {
+      allow read, write, delete: if isOwner(uid)
+        && (request.method == 'delete' || hasOnly([
+          'name','description','structure',
+          'defaultJournalType','defaultMoodRequired',
+          'isBuiltIn','createdAt','updatedAt'
+        ]));
+    }
 
-		// User's entries
-		match /users/{uid}/entries/{entryId} {
-			allow read: if isOwner(uid);
-			allow create: if isOwner(uid)
-				&& hasOnlyAllowedFields([
-					'title', 'content', 'mood', 'moodIntensity', 'tags',
-					'location', 'weather', 'journalType', 'entryDate',
-					'createdAt', 'updatedAt', 'favorite', 'pinned',
-					'wordCount', 'readingTime', 'isDraft'
-				])
-				&& request.resource.data.title is string
-				&& request.resource.data.content is string
-				&& request.resource.data.entryDate is string;
-			allow update: if isOwner(uid)
-				&& hasOnlyAllowedFields([
-					'title', 'content', 'mood', 'moodIntensity', 'tags',
-					'location', 'weather', 'journalType', 'entryDate',
-					'createdAt', 'updatedAt', 'favorite', 'pinned',
-					'wordCount', 'readingTime', 'isDraft'
-				]);
-			allow delete: if isOwner(uid);
-		}
+    match /users/{uid}/tags/{tagId} {
+      allow read, write, delete: if isOwner(uid)
+        && (request.method == 'delete' || hasOnly([
+          'name','color','count','createdAt'
+        ]));
+    }
 
-		// Templates
-		match /users/{uid}/templates/{templateId} {
-			allow read, write: if isOwner(uid)
-				&& hasOnlyAllowedFields([
-					'name', 'description', 'content', 'isBuiltIn', 'journalType',
-					'createdAt', 'updatedAt'
-				]);
-		}
+    match /users/{uid}/goals/{goalId} {
+      allow read, write, delete: if isOwner(uid)
+        && (request.method == 'delete' || hasOnly([
+          'title','description','type','target','progress',
+          'period','startDate','endDate','completedAt',
+          'isArchived','createdAt','updatedAt'
+        ]));
+    }
 
-		// Tags
-		match /users/{uid}/tags/{tagId} {
-			allow read, write: if isOwner(uid)
-				&& hasOnlyAllowedFields(['name', 'color', 'count', 'createdAt']);
-		}
+    match /users/{uid}/counters/{counterId} {
+      allow read, write, delete: if isOwner(uid);
+    }
 
-		// Goals
-		match /users/{uid}/goals/{goalId} {
-			allow read, write: if isOwner(uid)
-				&& hasOnlyAllowedFields([
-					'title', 'description', 'type', 'target', 'period',
-					'startDate', 'endDate', 'isArchived', 'createdAt', 'updatedAt'
-				]);
-		}
-
-		// Settings (single doc per user)
-		match /users/{uid}/settings/{settingsId} {
-			allow read, write: if isOwner(uid)
-				&& hasOnlyAllowedFields([
-					'theme', 'font', 'accentColor', 'defaultJournalType',
-					'defaultMood', 'weekStart', 'notifications', 'privacy',
-					'updatedAt'
-				]);
-		}
-
-		// Cached counters
-		match /users/{uid}/counters/{counterId} {
-			allow read, write: if isOwner(uid);
-		}
-
-		// Per-year rollups
-		match /users/{uid}/counters/yearly/{year} {
-			allow read, write: if isOwner(uid);
-		}
-
-		// Default deny
-		match /{document=**} {
-			allow read, write: if false;
-		}
-	}
+    // Default deny.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
 }

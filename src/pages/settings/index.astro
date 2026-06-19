@@ -1,0 +1,7 @@
+---
+import AppPage from '~/layouts/AppPage.astro'
+import { SettingsPage } from '~/components/AppPages'
+---
+<AppPage title="Settings — Journal" heading="Settings" lede="Defaults, privacy, encryption, and data controls.">
+  <SettingsPage client:only="react" />
+</AppPage>

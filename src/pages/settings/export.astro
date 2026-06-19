@@ -1,0 +1,7 @@
+---
+import AppPage from '~/layouts/AppPage.astro'
+import { ExportPage } from '~/components/AppPages'
+---
+<AppPage title="Export — Journal" heading="Export" lede="Take your data with you. JSON, Markdown, or PDF.">
+  <ExportPage client:only="react" />
+</AppPage>

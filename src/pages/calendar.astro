@@ -1,0 +1,7 @@
+---
+import AppPage from '~/layouts/AppPage.astro'
+import { CalendarPage } from '~/components/AppPages'
+---
+<AppPage title="Calendar — Journal" heading="Calendar" lede="Mood color heatmap by day. Use ← → ↑ ↓ or J/K to walk dates.">
+  <CalendarPage client:only="react" />
+</AppPage>

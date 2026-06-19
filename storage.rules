@@ -1,0 +1,16 @@
+rules_version = '2';
+
+// Firebase Storage rules for oriz-journal photos.
+// Photos live at /journal/users/{uid}/photos/{entryId}/{file}
+// — owner-only read/write/delete.
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /journal/users/{uid}/photos/{entryId}/{file=**} {
+      allow read, write, delete: if request.auth != null && request.auth.uid == uid;
+    }
+    match /{path=**} {
+      allow read, write: if false;
+    }
+  }
+}

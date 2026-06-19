@@ -1,0 +1,7 @@
+---
+import AppPage from '~/layouts/AppPage.astro'
+import { EntriesPage } from '~/components/AppPages'
+---
+<AppPage title="Entries — Journal" heading="Entries" lede="Every entry, newest first. Filter by mood or journal type.">
+  <EntriesPage client:only="react" />
+</AppPage>

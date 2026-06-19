@@ -1,0 +1,7 @@
+---
+import AppPage from '~/layouts/AppPage.astro'
+import { StatsPage } from '~/components/AppPages'
+---
+<AppPage title="Stats — Journal" heading="Stats" lede="Streaks, mood trend, top tags, and journal-type breakdown.">
+  <StatsPage client:only="react" />
+</AppPage>

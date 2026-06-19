@@ -1,0 +1,7 @@
+---
+import AppPage from '~/layouts/AppPage.astro'
+import { PinnedPage } from '~/components/AppPages'
+---
+<AppPage title="Pinned — Journal" heading="Pinned" lede="Entries you've pinned to the top.">
+  <PinnedPage client:only="react" />
+</AppPage>

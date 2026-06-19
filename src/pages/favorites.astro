@@ -1,0 +1,7 @@
+---
+import AppPage from '~/layouts/AppPage.astro'
+import { FavoritesPage } from '~/components/AppPages'
+---
+<AppPage title="Favorites — Journal" heading="Favorites" lede="Entries you've hearted.">
+  <FavoritesPage client:only="react" />
+</AppPage>

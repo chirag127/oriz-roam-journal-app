@@ -1,0 +1,10 @@
+---
+/**
+ * Tag-page shell. Firebase Hosting rewrites /tags/{tag} → /tags/view (this file).
+ */
+import AppPage from '~/layouts/AppPage.astro'
+import { TagPage } from '~/components/AppPages'
+---
+<AppPage title="Tag — Journal" heading="Tagged entries">
+  <TagPage client:only="react" />
+</AppPage>

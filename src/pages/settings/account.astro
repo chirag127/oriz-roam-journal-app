@@ -1,0 +1,7 @@
+---
+import AppPage from '~/layouts/AppPage.astro'
+import { DeleteAccountPage } from '~/components/AppPages'
+---
+<AppPage title="Delete account — Journal" heading="Delete account data" lede="A one-way action. Read carefully.">
+  <DeleteAccountPage client:only="react" />
+</AppPage>

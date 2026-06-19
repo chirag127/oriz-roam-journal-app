@@ -1,0 +1,10 @@
+---
+/**
+ * Edit-view shell. Firebase Hosting rewrites /entries/{id}/edit to /entries/edit.
+ */
+import AppPage from '~/layouts/AppPage.astro'
+import { EditEntryPage } from '~/components/AppPages'
+---
+<AppPage title="Edit entry — Journal" heading="Edit entry">
+  <EditEntryPage client:only="react" />
+</AppPage>

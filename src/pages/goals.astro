@@ -1,0 +1,7 @@
+---
+import AppPage from '~/layouts/AppPage.astro'
+import { GoalsPage } from '~/components/AppPages'
+---
+<AppPage title="Goals — Journal" heading="Goals" lede="Set targets — entries per period, words written, or streak length.">
+  <GoalsPage client:only="react" />
+</AppPage>

@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '~/layouts/BaseLayout.astro'
 import { SITE_CONFIG } from '~/lib/siteConfig'
+import InstallPrompt from '~/components/InstallPrompt.tsx'
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -23,29 +24,42 @@ const journalTypes = [
   { emoji: '🔬', label: 'Research', desc: 'Studies and inquiry' },
   { emoji: '✨', label: 'Reflection', desc: 'Deep reflection' },
 ]
+
+const features = [
+  { title: 'Rich-text editor', body: 'Tiptap-powered with headings, lists, tasks, code blocks, and inline images. Autosaves every 4.5 seconds.' },
+  { title: 'Calendar + heatmap', body: 'See a year at a glance. Mood color per day, keyboard navigable.' },
+  { title: 'Memories', body: '“On this day” one, two, three, and five years ago — surfaced automatically.' },
+  { title: 'Stats + streaks', body: 'Current and longest streak, words written, mood trend chart, top tags, journal-type pie.' },
+  { title: 'Export anywhere', body: 'JSON, Markdown ZIP, single Markdown bundle, PDF. Re-import Day One JSON, CSV, or Markdown.' },
+  { title: 'PWA, offline-first', body: 'Install on your phone or desktop. Service worker precaches the app shell. Works offline; syncs when back.' },
+  { title: 'Photos', body: 'Drag-drop image upload to your private Firebase Storage bucket, scoped by entry.' },
+  { title: 'Optional E2EE', body: 'Toggle on encryption — entry bodies sealed with a passphrase-derived key via libsodium.' },
+  { title: 'One sign-in', body: 'Same identity as every other oriz site. Anonymous trial mode. No tracking, no ads.' },
+]
 ---
 
-<BaseLayout jsonLd={jsonLd}>
+<BaseLayout jsonLd={jsonLd} showSidebar={false}>
   <section class="hero">
     <p class="eyebrow">📓 Journal · oriz family</p>
     <h1 class="hero-h">
       A quiet place for the thoughts <span class="hero-accent">worth keeping</span>.
     </h1>
     <p class="hero-lede">
-      Privacy-first journaling. Ten journal types. Offline-first PWA. Your entries
-      live in Firestore under your own user ID — nobody else can read them.
+      A privacy-first PWA journal. Ten built-in journal types. Tiptap editor.
+      Mood, tags, calendar heatmap, memories, streaks, full-text search, photos,
+      exports, optional end-to-end encryption. Free. Yours.
     </p>
     <div class="hero-cta">
-      <a href="/account/" class="btn btn-primary">Sign in to start →</a>
-      <a href="/about/" class="btn">About Journal</a>
+      <a href="/dashboard" class="btn btn-primary">Open the app →</a>
+      <a href="/account/" class="btn">Sign in</a>
+      <InstallPrompt client:idle />
     </div>
   </section>
 
   <section class="section">
     <h2 class="section-h">Ten ways to write</h2>
     <p class="section-lede">
-      Pick a journal type — or use them all. Each entry tags itself with mood,
-      location, weather, and free-form tags.
+      Pick a journal type — or use them all. Each entry tags itself with mood, tags, and (optionally) location and weather.
     </p>
     <ul class="type-grid">
       {journalTypes.map((t) => (
@@ -60,117 +74,48 @@ const journalTypes = [
 
   <section class="section">
     <h2 class="section-h">What you get</h2>
-    <ul class="feat-list">
-      <li><strong>Markdown editor</strong> — live preview, autosave, full text in your browser.</li>
-      <li><strong>Calendar &amp; timeline</strong> — see a year at a glance.</li>
-      <li><strong>Memories</strong> — “on this day” one year ago, two years ago.</li>
-      <li><strong>Stats &amp; goals</strong> — track streaks, word counts, habits.</li>
-      <li><strong>Export anywhere</strong> — JSON, Markdown, ZIP. Re-import too.</li>
-      <li><strong>One sign-in</strong> — works across every <code>*.oriz.in</code> site.</li>
+    <ul class="feat-grid">
+      {features.map((f) => (
+        <li class="feat-card">
+          <strong>{f.title}</strong>
+          <span>{f.body}</span>
+        </li>
+      ))}
     </ul>
+  </section>
+
+  <section class="section section-cta">
+    <h2 class="section-h">Ready when you are.</h2>
+    <p class="section-lede">Anonymous trial, no email required. Convert to a real account whenever.</p>
+    <div class="hero-cta">
+      <a href="/dashboard" class="btn btn-primary">Open the app →</a>
+      <a href="/about" class="btn">About Journal</a>
+    </div>
   </section>
 </BaseLayout>
 
 <style>
-  .hero {
-    padding: clamp(2rem, 6vw, 5rem) 0 clamp(1.5rem, 4vw, 3rem);
-    border-bottom: 1px solid var(--color-border);
-  }
-  .eyebrow {
-    color: var(--color-fg-muted);
-    font-size: 0.8125rem;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    margin: 0 0 1rem;
-  }
-  .hero-h {
-    font-family: var(--font-serif);
-    font-size: clamp(2rem, 5vw, 3.25rem);
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    line-height: 1.1;
-    margin: 0 0 1rem;
-    max-width: 22ch;
-  }
+  .hero { padding: clamp(2rem, 6vw, 5rem) 0 clamp(1.5rem, 4vw, 3rem); border-bottom: 1px solid var(--color-border); }
+  .eyebrow { color: var(--color-fg-muted); font-size: 0.8125rem; letter-spacing: 0.05em; text-transform: uppercase; margin: 0 0 1rem; }
+  .hero-h { font-family: var(--font-serif); font-size: clamp(2rem, 5vw, 3.25rem); font-weight: 600; letter-spacing: -0.02em; line-height: 1.1; margin: 0 0 1rem; max-width: 22ch; }
   .hero-accent { color: var(--color-accent); }
-  .hero-lede {
-    color: var(--color-fg-muted);
-    font-size: 1.125rem;
-    line-height: 1.6;
-    max-width: 56ch;
-    margin: 0 0 2rem;
-  }
-  .hero-cta { display: flex; gap: 0.75rem; flex-wrap: wrap; }
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    height: 44px;
-    padding-inline: 1.25rem;
-    border-radius: var(--radius-button);
-    border: 1px solid var(--color-border);
-    background: var(--color-bg-soft);
-    color: var(--color-fg);
-    text-decoration: none;
-    font-size: 0.9375rem;
-    font-weight: 500;
-  }
-  .btn-primary {
-    background: var(--color-accent);
-    color: var(--color-accent-fg);
-    border-color: var(--color-accent);
-  }
+  .hero-lede { color: var(--color-fg-muted); font-size: 1.125rem; line-height: 1.6; max-width: 56ch; margin: 0 0 2rem; }
+  .hero-cta { display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center; }
+  .btn { display: inline-flex; align-items: center; height: 44px; padding-inline: 1.25rem; border-radius: var(--radius-button); border: 1px solid var(--color-border); background: var(--color-bg-soft); color: var(--color-fg); text-decoration: none; font-size: 0.9375rem; font-weight: 500; }
+  .btn-primary { background: var(--color-accent); color: var(--color-accent-fg); border-color: var(--color-accent); }
   .btn:hover { color: var(--color-fg); }
   .btn-primary:hover { color: var(--color-accent-fg); }
-
   .section { padding-block: clamp(2rem, 5vw, 4rem); }
-  .section-h {
-    font-family: var(--font-serif);
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin: 0 0 0.5rem;
-  }
-  .section-lede {
-    color: var(--color-fg-muted);
-    margin: 0 0 1.5rem;
-    max-width: 56ch;
-  }
-
-  .type-grid {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 0.75rem;
-  }
-  .type-card {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-    padding: 1rem;
-    background: var(--color-bg-soft);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-card);
-  }
+  .section-cta { border-top: 1px solid var(--color-border); }
+  .section-h { font-family: var(--font-serif); font-size: 1.5rem; font-weight: 600; margin: 0 0 0.5rem; }
+  .section-lede { color: var(--color-fg-muted); margin: 0 0 1.5rem; max-width: 56ch; }
+  .type-grid { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 0.75rem; }
+  .type-card { display: flex; flex-direction: column; gap: 0.25rem; padding: 1rem; background: var(--color-bg-soft); border: 1px solid var(--color-border); border-radius: var(--radius-card); }
   .type-emoji { font-size: 1.5rem; }
   .type-name { font-weight: 600; }
   .type-desc { font-size: 0.875rem; color: var(--color-fg-muted); }
-
-  .feat-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.625rem;
-    color: var(--color-fg-muted);
-    line-height: 1.6;
-  }
-  .feat-list strong { color: var(--color-fg); }
-  .feat-list code {
-    background: var(--color-bg-muted);
-    padding: 0.125em 0.375em;
-    border-radius: 0.25rem;
-    font-size: 0.875em;
-  }
+  .feat-grid { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 0.75rem; }
+  .feat-card { padding: 1rem 1.125rem; background: var(--color-bg-soft); border: 1px solid var(--color-border); border-radius: var(--radius-card); display: flex; flex-direction: column; gap: 0.25rem; }
+  .feat-card strong { font-family: var(--font-serif); font-size: 1rem; font-weight: 600; }
+  .feat-card span { color: var(--color-fg-muted); line-height: 1.5; font-size: 0.875rem; }
 </style>

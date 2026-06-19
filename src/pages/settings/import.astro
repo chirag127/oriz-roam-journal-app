@@ -1,0 +1,7 @@
+---
+import AppPage from '~/layouts/AppPage.astro'
+import { ImportPage } from '~/components/AppPages'
+---
+<AppPage title="Import — Journal" heading="Import" lede="Bring entries in from Day One JSON, generic CSV, or a single Markdown file.">
+  <ImportPage client:only="react" />
+</AppPage>

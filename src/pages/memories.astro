@@ -1,0 +1,7 @@
+---
+import AppPage from '~/layouts/AppPage.astro'
+import { MemoriesPage } from '~/components/AppPages'
+---
+<AppPage title="Memories — Journal" heading="Memories" lede="On this day — entries from one, two, three, and five years ago.">
+  <MemoriesPage client:only="react" />
+</AppPage>

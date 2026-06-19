@@ -1,0 +1,11 @@
+---
+/**
+ * Read-view shell. Firebase Hosting rewrites /entries/{id} to this file at /entries/view.
+ * The React island reads window.location.pathname for the id.
+ */
+import AppPage from '~/layouts/AppPage.astro'
+import { ReadEntryPage } from '~/components/AppPages'
+---
+<AppPage title="Entry — Journal" heading="">
+  <ReadEntryPage client:only="react" />
+</AppPage>

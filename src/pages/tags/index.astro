@@ -1,0 +1,7 @@
+---
+import AppPage from '~/layouts/AppPage.astro'
+import { TagsPage } from '~/components/AppPages'
+---
+<AppPage title="Tags — Journal" heading="Tags" lede="Every tag you've ever used, with counts.">
+  <TagsPage client:only="react" />
+</AppPage>

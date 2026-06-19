@@ -1,56 +1,59 @@
 ---
 /**
- * Journal-specific sidebar. Sections:
- *   - App: Dashboard, Today, New entry
- *   - Browse: Calendar, Timeline, Memories, Tags, Favorites, Pinned
- *   - Insights: Stats, Goals, Moods
- *   - Workspace: Templates, Search, Settings
- *   - Family: every site in the oriz family
- *
- * The actual journal app pages are queued behind a separate migration —
- * for now these links land on /account/ (sign-in gate). Once the React app
- * is rebuilt on top of oriz-ui, they will route to the real pages.
+ * Journal-specific sidebar with real routes (no longer pointing at /account/).
+ * Sections per the rebuild brief:
+ *   - Today        (Dashboard, New entry)
+ *   - Browse       (Entries, Calendar, Memories, Search)
+ *   - Organize     (Tags, Favorites, Pinned)
+ *   - Insights     (Stats, Goals)
+ *   - Setup        (Templates, Settings)
+ *   - Family       (FAMILY_SITES quick-jump)
  */
 import { Sidebar } from '@chirag127/oriz-ui'
 import { FAMILY_SITES } from '@chirag127/oriz-ui'
 import { SITE_CONFIG } from '~/lib/siteConfig'
 
-const path = Astro.url.pathname
+const path = Astro.url.pathname.replace(/\/$/, '') || '/'
+const here = (p: string) => path === p || path.startsWith(p + '/')
 
 const sections = [
   {
-    title: 'App',
+    title: 'Today',
     links: [
-      { label: '📥 Dashboard', href: '/account/', active: path === '/account/' },
-      { label: '✍️ New entry', href: '/account/', badge: 'soon' },
-      { label: '📅 Today', href: '/account/', badge: 'soon' },
+      { label: '🏠 Dashboard', href: '/dashboard', active: here('/dashboard') },
+      { label: '✍️ New entry', href: '/entries/new', active: path === '/entries/new' },
     ],
   },
   {
     title: 'Browse',
     links: [
-      { label: '🗓️ Calendar', href: '/account/', badge: 'soon' },
-      { label: '⏳ Timeline', href: '/account/', badge: 'soon' },
-      { label: '🌟 Memories', href: '/account/', badge: 'soon' },
-      { label: '🏷️ Tags', href: '/account/', badge: 'soon' },
-      { label: '❤️ Favorites', href: '/account/', badge: 'soon' },
-      { label: '📌 Pinned', href: '/account/', badge: 'soon' },
+      { label: '📚 Entries', href: '/entries', active: path === '/entries' || path.startsWith('/entries/') && path !== '/entries/new' },
+      { label: '🗓️ Calendar', href: '/calendar', active: here('/calendar') },
+      { label: '🌟 Memories', href: '/memories', active: here('/memories') },
+      { label: '🔎 Search', href: '/search', active: here('/search') },
+    ],
+  },
+  {
+    title: 'Organize',
+    links: [
+      { label: '🏷️ Tags', href: '/tags', active: here('/tags') },
+      { label: '❤️ Favorites', href: '/favorites', active: here('/favorites') },
+      { label: '📌 Pinned', href: '/pinned', active: here('/pinned') },
     ],
   },
   {
     title: 'Insights',
     links: [
-      { label: '📊 Stats', href: '/account/', badge: 'soon' },
-      { label: '🎯 Goals', href: '/account/', badge: 'soon' },
-      { label: '😊 Moods', href: '/account/', badge: 'soon' },
+      { label: '📊 Stats', href: '/stats', active: here('/stats') },
+      { label: '🎯 Goals', href: '/goals', active: here('/goals') },
     ],
   },
   {
-    title: 'Workspace',
+    title: 'Setup',
     links: [
-      { label: '📋 Templates', href: '/account/', badge: 'soon' },
-      { label: '🔎 Search', href: '/account/', badge: 'soon' },
-      { label: '⚙️ Settings', href: '/account/', badge: 'soon' },
+      { label: '📋 Templates', href: '/templates', active: here('/templates') },
+      { label: '⚙️ Settings', href: '/settings', active: here('/settings') },
+      { label: '👤 Account', href: '/account', active: here('/account') },
     ],
   },
   {

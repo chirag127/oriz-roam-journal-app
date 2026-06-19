@@ -1,0 +1,7 @@
+---
+import AppPage from '~/layouts/AppPage.astro'
+import { NewEntryPage } from '~/components/AppPages'
+---
+<AppPage title="New entry — Journal" heading="New entry">
+  <NewEntryPage client:only="react" />
+</AppPage>

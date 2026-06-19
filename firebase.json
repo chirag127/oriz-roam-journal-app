@@ -2,12 +2,32 @@
   "hosting": {
     "public": "dist",
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
-    "rewrites": [{ "source": "**", "destination": "/index.html" }],
     "cleanUrls": true,
-    "trailingSlash": false
+    "trailingSlash": false,
+    "headers": [
+      { "source": "**/*.@(js|css|woff2|png|svg|ico)", "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]},
+      { "source": "/sw.js", "headers": [
+        { "key": "Cache-Control", "value": "no-cache" }
+      ]},
+      { "source": "/manifest.webmanifest", "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=600" },
+        { "key": "Content-Type", "value": "application/manifest+json" }
+      ]}
+    ],
+    "rewrites": [
+      { "source": "/entries/*/edit", "destination": "/entries/edit.html" },
+      { "source": "/tags/*", "destination": "/tags/view.html" },
+      { "source": "/entries/*", "destination": "/entries/view.html" },
+      { "source": "**", "destination": "/index.html" }
+    ]
   },
   "firestore": {
     "rules": "firestore.rules",
     "indexes": "firestore.indexes.json"
+  },
+  "storage": {
+    "rules": "storage.rules"
   }
 }

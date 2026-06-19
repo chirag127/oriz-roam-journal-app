@@ -1,0 +1,7 @@
+---
+import AppPage from '~/layouts/AppPage.astro'
+import { TemplatesPage } from '~/components/AppPages'
+---
+<AppPage title="Templates — Journal" heading="Templates" lede="Ten built-in templates plus your own.">
+  <TemplatesPage client:only="react" />
+</AppPage>

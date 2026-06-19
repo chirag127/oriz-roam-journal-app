@@ -1,0 +1,7 @@
+---
+import AppPage from '~/layouts/AppPage.astro'
+import { SearchPage } from '~/components/AppPages'
+---
+<AppPage title="Search — Journal" heading="Search" lede="Full-text fuzzy search over your entries. Filter by mood, tag, and date.">
+  <SearchPage client:only="react" />
+</AppPage>
