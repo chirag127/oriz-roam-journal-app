@@ -4,6 +4,7 @@ import { VitePWA } from 'vite-plugin-pwa'
 
 export default shell({
   site: 'https://journal.oriz.in',
+  base: process.env.PUBLIC_BASE_PATH ?? '/',
   vite: {
     plugins: [
       VitePWA({
