@@ -28,6 +28,7 @@ import { getEntry, newEntryId, saveEntry, todayIso } from '~/lib/journalDb'
 import { mdToHtml } from '~/lib/markdown'
 import { BUILTIN_TEMPLATES } from '~/lib/templates'
 import type { Entry, JournalType } from '~/lib/types'
+import EntryLocationPin from './EntryLocationPin'
 import { setSeal } from './Seal'
 import TipTapEditor from './TipTapEditor'
 
@@ -250,6 +251,11 @@ export default function EntryEditor({
         />
 
         <footer className={`ee-foot ${statusFaded ? 'ee-foot-faded' : ''}`}>
+          <EntryLocationPin
+            location={entry.location}
+            onChange={(next) => update({ location: next })}
+          />
+          <span className="ee-foot-spacer" aria-hidden="true"></span>
           <span className="ee-words tabular">{entry.wordCount || 0} words</span>
           <span className="ee-lock chrome">
             {savingState === 'saving' && 'sealing…'}
@@ -373,6 +379,7 @@ export default function EntryEditor({
         }
         .ee-foot-faded { opacity: 0.2; }
         .ee-foot:hover { opacity: 1; }
+        .ee-foot-spacer { flex: 1; }
         .ee-words { font-feature-settings: 'tnum' 1, 'zero' 1, 'calt' 0; }
         .ee-lock { color: var(--graphite); }
       `}</style>

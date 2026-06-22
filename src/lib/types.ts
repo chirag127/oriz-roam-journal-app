@@ -91,6 +91,12 @@ export interface Entry {
   /** 4-host replica records. Empty for legacy entries — fall back to `photoUrls`. */
   photos?: PhotoRecord[]
   weather?: { temp: number; condition: string; locationCoarse: string } | null
+  /**
+   * Optional pin attached to the entry. Powers /map (travel mode, Pro-tier).
+   * `place` and `country` come from nominatim reverse-geocoding; `lat`/`lon`
+   * are from `navigator.geolocation` (decimal degrees, WGS84).
+   */
+  location?: { lat: number; lon: number; place?: string; country?: string }
   // E2EE
   encrypted?: boolean
   encryptedNonce?: string

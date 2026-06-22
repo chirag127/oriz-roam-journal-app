@@ -1,0 +1,14 @@
+---
+import MapView from '~/components/MapView'
+import AppPage from '~/layouts/AppPage.astro'
+---
+<AppPage title="map — oriz-journal">
+  <h1 class="route-h">Map</h1>
+  <p class="route-lede">Every entry with a location pin, laid out on the world. Drop a pin from any entry's toolbar.</p>
+  <MapView client:only="react" />
+  <style>
+    .route-h { font-family: var(--font-display); font-size: clamp(1.625rem, 4vw, 2rem); font-weight: 600; letter-spacing: -0.01em; margin: 0 0 0.5rem; color: var(--page-cream); }
+    .route-lede { font-family: var(--font-display); font-style: italic; font-size: 1.0625rem; color: var(--graphite); margin: 0 0 1.5rem; }
+    @media (prefers-color-scheme: light) { .route-h { color: var(--ink, #1a1a22); } }
+  </style>
+</AppPage>
