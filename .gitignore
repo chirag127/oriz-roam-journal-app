@@ -13,3 +13,7 @@ ui-debug.log
 .DS_Store
 .idea
 *.tsbuildinfo
+
+# env (synced via sops + age)
+.env.*.local
+.sops-age-key.txt
