@@ -88,6 +88,7 @@ export default function EntryEditor({
           isDraft: true,
           wordCount: 0,
           photoUrls: [],
+          photos: [],
           weather: null,
         }
       }
@@ -241,9 +242,10 @@ export default function EntryEditor({
           uid={uid}
           entryId={stagedEntryId}
           initialHtml={entry.bodyHtml || mdToHtml(entry.body || '')}
+          initialPhotos={entry.photos || []}
           placeholder="Begin."
-          onChange={({ html, markdown, wordCount, photoUrls }) =>
-            update({ bodyHtml: html, body: markdown, wordCount, photoUrls })
+          onChange={({ html, markdown, wordCount, photoUrls, photos }) =>
+            update({ bodyHtml: html, body: markdown, wordCount, photoUrls, photos })
           }
         />
 

@@ -21,25 +21,45 @@ import Link from '@tiptap/extension-link'
 import Placeholder from '@tiptap/extension-placeholder'
 import { BubbleMenu, EditorContent, useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { countWords } from '~/lib/journalDb'
 import { htmlToMd } from '~/lib/markdown'
-import { uploadPhoto } from '~/lib/photos'
+import { type Photo, uploadPhotoForEditor } from '~/lib/photos'
 
 interface Props {
   uid: string
   entryId: string
   initialHtml: string
   placeholder?: string
+  initialPhotos?: Photo[]
   onChange: (out: {
     html: string
     markdown: string
     wordCount: number
     photoUrls: string[]
+    photos: Photo[]
   }) => void
 }
 
-export default function TipTapEditor({ uid, entryId, initialHtml, placeholder, onChange }: Props) {
+export default function TipTapEditor({
+  uid: _uid,
+  entryId: _entryId,
+  initialHtml,
+  placeholder,
+  initialPhotos,
+  onChange,
+}: Props) {
+  // Keep a running tally of Photo records keyed by primary URL so the editor
+  // can re-emit the correct 4-host tuple on every onChange — TipTap only
+  // tracks the img src in the HTML, so we hold the alternates here.
+  const photosByUrlRef = useRef<Map<string, Photo>>(new Map())
+  if (photosByUrlRef.current.size === 0 && initialPhotos?.length) {
+    for (const p of initialPhotos) {
+      const primary = p.urls.imagekit ?? p.urls.cloudinary ?? p.urls.imgbb ?? p.urls.ghRelease
+      if (primary) photosByUrlRef.current.set(primary, p)
+    }
+  }
+
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
@@ -65,7 +85,10 @@ export default function TipTapEditor({ uid, entryId, initialHtml, placeholder, o
       const html = editor.getHTML()
       const md = htmlToMd(html)
       const photoUrls = Array.from(html.matchAll(/<img[^>]+src="([^"]+)"/g)).map((m) => m[1])
-      onChange({ html, markdown: md, wordCount: countWords(editor.getText()), photoUrls })
+      const photos = photoUrls
+        .map((u) => photosByUrlRef.current.get(u))
+        .filter((p): p is Photo => Boolean(p))
+      onChange({ html, markdown: md, wordCount: countWords(editor.getText()), photoUrls, photos })
     },
     editorProps: {
       attributes: { class: 'tt-content entry-body', spellcheck: 'true' },
@@ -75,13 +98,14 @@ export default function TipTapEditor({ uid, entryId, initialHtml, placeholder, o
         const images = Array.from(files).filter((f) => f.type.startsWith('image/'))
         if (!images.length) return false
         event.preventDefault()
-        ;(async () => {
+        void (async () => {
           for (const file of images) {
             try {
-              const url = await uploadPhoto(uid, entryId, file)
-              editor?.chain().focus().setImage({ src: url, alt: file.name }).run()
+              const { primaryUrl, photo } = await uploadPhotoForEditor(file)
+              photosByUrlRef.current.set(primaryUrl, photo)
+              editor?.chain().focus().setImage({ src: primaryUrl, alt: file.name }).run()
             } catch (e) {
-              console.error('upload failed', e)
+              console.error('[photos] upload failed', e)
             }
           }
         })()

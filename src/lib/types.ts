@@ -45,6 +45,27 @@ export const JOURNAL_TYPES: { id: JournalType; label: string; emoji: string }[] 
   { id: 'custom', label: 'Custom', emoji: '📝' },
 ]
 
+/**
+ * 4-host photo tuple — see lib/photos.ts. Each entry stores one record per
+ * uploaded image. The TipTap body still references images by URL in the HTML
+ * (the "primary" URL: ImageKit > Cloudinary > imgbb > GH Releases); these
+ * `photos[]` records carry the alternate URLs for read failover.
+ */
+export interface PhotoRecord {
+  id: string
+  urls: {
+    cloudinary?: string
+    imagekit?: string
+    imgbb?: string
+    ghRelease?: string
+  }
+  width?: number
+  height?: number
+  bytes?: number
+  sha256?: string
+  createdAt: number
+}
+
 export interface Entry {
   id: string
   title: string
@@ -61,7 +82,14 @@ export interface Entry {
   pinned: boolean
   isDraft: boolean
   wordCount: number
+  /**
+   * Flattened list of img-src URLs found in `bodyHtml`. Kept for backward
+   * compatibility with legacy entries (Firebase-Storage era) and as a cheap
+   * query handle. Authoritative metadata lives in `photos`.
+   */
   photoUrls: string[]
+  /** 4-host replica records. Empty for legacy entries — fall back to `photoUrls`. */
+  photos?: PhotoRecord[]
   weather?: { temp: number; condition: string; locationCoarse: string } | null
   // E2EE
   encrypted?: boolean

@@ -2,9 +2,11 @@
  * Account-deletion view at /settings/account. Writes a tombstone profile,
  * deletes all entries + tags + templates + goals + counters, then signs out.
  *
- * Storage objects (photos) are not transactionally cleaned up here — see
- * README "manual setup" note. We delete them best-effort by walking
- * photoUrls on every entry before deletion.
+ * Photo blobs on Cloudinary / ImageKit / imgbb / GH Releases are NOT deleted
+ * here — those hosts either lack a browser-accessible delete API (imgbb) or
+ * require server-side admin creds (Cloudinary/ImageKit/GitHub). Orphaned
+ * blobs age out via the hosts' own quota machinery. This is documented in
+ * `knowledge/decisions/architecture/journal-photo-pipeline.md`.
  */
 
 import { signOut } from 'firebase/auth'
@@ -12,6 +14,7 @@ import { collection, deleteDoc, doc, getDocs, setDoc } from 'firebase/firestore'
 import { useState } from 'react'
 import { auth, db } from '~/lib/firebase'
 import { deletePhoto } from '~/lib/photos'
+import type { PhotoRecord } from '~/lib/types'
 
 interface Props {
   uid: string
@@ -31,11 +34,12 @@ export default function DeleteAccountView({ uid }: Props) {
     setBusy(true)
     setErr(null)
     try {
-      // 1) walk entries → delete photos, then docs
+      // 1) walk entries → best-effort delete photos (4-host + legacy URLs), then docs
       const entriesSnap = await getDocs(collection(db, `users/${uid}/entries`))
       for (const d of entriesSnap.docs) {
-        const data = d.data() as { photoUrls?: string[] }
+        const data = d.data() as { photoUrls?: string[]; photos?: PhotoRecord[] }
         for (const url of data.photoUrls || []) await deletePhoto(url).catch(() => {})
+        for (const p of data.photos || []) await deletePhoto(p).catch(() => {})
         await deleteDoc(d.ref)
       }
       // 2) wipe templates, tags, goals, counters
@@ -79,9 +83,11 @@ export default function DeleteAccountView({ uid }: Props) {
         <h2>Delete account data</h2>
         <p>
           This permanently deletes every journal entry, tag, template, goal, and counter on your
-          account. <strong>Photos in Firebase Storage are also removed.</strong> Your auth identity
-          at <code>auth.oriz.in</code> is not deleted by this action — that is a separate step at{' '}
-          <a href="/account/">/account/</a>.
+          account. <strong>Photo blobs replicated to Cloudinary, ImageKit, imgbb, and GitHub
+          Releases are NOT deleted</strong> — those hosts lack browser-accessible delete APIs;
+          orphaned images age out via host-side quotas. Your auth identity at{' '}
+          <code>auth.oriz.in</code> is not deleted by this action either — that is a separate step
+          at <a href="/account/">/account/</a>.
         </p>
         <p>
           To confirm, type <code>DELETE MY JOURNAL</code> below.

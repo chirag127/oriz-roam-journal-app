@@ -183,6 +183,7 @@ export default function ImportExportView({ uid, mode }: Props) {
             isDraft: false,
             wordCount: body.trim().split(/\s+/).filter(Boolean).length,
             photoUrls: [],
+            photos: [],
             weather: null,
           }
           await saveEntry(uid, e)
@@ -216,6 +217,7 @@ export default function ImportExportView({ uid, mode }: Props) {
             isDraft: false,
             wordCount: body.trim().split(/\s+/).filter(Boolean).length,
             photoUrls: [],
+            photos: [],
             weather: null,
           }
           await saveEntry(uid, e)
@@ -246,6 +248,7 @@ export default function ImportExportView({ uid, mode }: Props) {
           isDraft: false,
           wordCount: text.trim().split(/\s+/).filter(Boolean).length,
           photoUrls: [],
+          photos: [],
           weather: null,
         }
         await saveEntry(uid, e)
