@@ -1,186 +1,255 @@
 ---
 /*
- * oriz-journal — landing / marketing index.
+ * Roam — v0 landing page.
  *
- * Per the v2 brief: this is a quiet sales surface, NOT the dashboard. The
- * dashboard lives at /dashboard (auth-gated). This page is what someone
- * sees if they hit `journal.oriz.in` cold — a single column, a few
- * sentences in display serif, and one CTA: "open the journal →".
- *
- * NO type-grid (the v1 ten emoji cards are deleted). NO feature grid. NO
- * "what you get" cards. NO install prompt button (the PWA installs itself
- * when the app shell loads). The seal is the hero.
+ * Replaces the v1/v2 "seal + ten-types" pitch. The new family aesthetic from
+ * @chirag127/astro-shell takes over the chrome (top bar + footer); this page
+ * is a single quiet hero + two short sections (v0 shipped, v0.1 next) on the
+ * shared cream-paper canvas. No dashboard CTA, no feature grid, no "Coming
+ * soon" — the page says what works today and what's next.
  */
-import BaseLayout from '~/layouts/BaseLayout.astro'
+import FamilyChrome from '@chirag127/astro-shell/components/FamilyChrome.astro'
 import { SITE_CONFIG } from '~/lib/siteConfig'
 
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
-  name: SITE_CONFIG.name,
+  name: 'Roam',
   url: SITE_CONFIG.origin,
-  description: SITE_CONFIG.description,
+  description: 'A writing journal you actually return to.',
   publisher: { '@type': 'Person', name: 'Chirag Singhal' },
 }
+
+const title = 'Roam — a writing journal you actually return to'
+const description = 'A privacy-first journal that meets you where you are: write a sentence, write a page, write nothing. The journal stays.'
+const canonical = `${SITE_CONFIG.origin}${Astro.url.pathname}`
 ---
 
-<BaseLayout jsonLd={jsonLd}>
-  <section class="spine landing">
-    <h1 class="landing-h">A quiet place for the thoughts worth keeping.</h1>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="theme-color" content="#faf6ef" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Roam — oriz" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@chirag127" />
 
-    <p class="landing-lede">
-      A privacy-first PWA journal. Tiptap editor, libsodium-sealed entries,
-      offline-first, ten kinds of journal. Plaintext never leaves the device.
-    </p>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter+Tight:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
 
-    <hr class="hairline" />
+    <script
+      is:inline
+      type="application/ld+json"
+      set:html={JSON.stringify(jsonLd)}
+    />
+  </head>
+  <body>
+    <a href="#main" class="skip-link">Skip to content</a>
 
-    <p class="landing-cta">
-      <a href="/dashboard" class="landing-cta-primary">open the journal &rarr;</a>
-    </p>
+    <FamilyChrome slug="oriz-roam-journal-app" title="Roam" accent="#1a3a8f" />
 
-    <hr class="hairline" />
+    <main id="main">
+      <section class="hero">
+        <h1 class="hero__title">Roam</h1>
+        <p class="hero__tagline">a writing journal you actually return to</p>
+        <p class="hero__about">
+          Most journals fail the same way: a strong week, a missed day, and
+          the streak counter quietly turns into a shame engine. Roam takes
+          the opposite stance — write a sentence, write a page, write
+          nothing. The journal stays. Plaintext never leaves the device,
+          sync is optional, and the writing surface is the only thing on
+          the page.
+        </p>
+      </section>
 
-    <dl class="landing-defs">
-      <div>
-        <dt>The seal</dt>
-        <dd>
-          A small mark in the corner of every page. Solid when the entry is
-          encrypted to disk, hollow while you&rsquo;re typing, and pulses while
-          libsodium seals the bytes. It is the only thing that moves.
-        </dd>
-      </div>
-      <div>
-        <dt>Cream on dusk</dt>
-        <dd>
-          Entries live on a cream page floating on an ink-black frame. iA
-          Writer Quattro for the body, GT Sectra for the date, Inter for the
-          chrome. 66 characters per line. The room is quiet on purpose.
-        </dd>
-      </div>
-      <div>
-        <dt>What is not here</dt>
-        <dd>
-          No streak counters, no flame icons, no <em>don&rsquo;t break the chain</em>
-          nags. No AI in the writing surface. No padlock icon — the seal is
-          the privacy signal. No emoji.
-        </dd>
-      </div>
-      <div>
-        <dt>Yours</dt>
-        <dd>
-          Free. Open source. Anonymous trial, no email needed. Sign in later
-          to sync across devices via the shared oriz account, which works on
-          every <code>*.oriz.in</code> site.
-        </dd>
-      </div>
-    </dl>
+      <hr class="rule" />
 
-    <p class="landing-meta chrome">
-      <a href="/account/">sign in</a> · <a href="/about">about</a> ·
-      <a href="/legal/privacy/">privacy</a> ·
-      <a href={`https://github.com/chirag127/oriz-journal`}>source</a>
-    </p>
-  </section>
-</BaseLayout>
+      <section class="block">
+        <h2 class="block__h">v0 — what&rsquo;s shipped</h2>
+        <ul class="block__list">
+          <li>
+            Sign in works (shared <code>oriz_auth</code> cookie across every
+            <code>*.oriz.in</code> app) and pricing works (single Razorpay
+            checkout on oriz.in). More coming.
+          </li>
+        </ul>
+      </section>
 
-<style>
-  .landing {
-    padding-block: clamp(3rem, 8vw, 6rem) clamp(2rem, 6vw, 4rem);
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-  }
-  .landing-h {
-    font-family: var(--font-display);
-    font-size: clamp(1.875rem, 5vw, 3rem);
-    font-weight: 600;
-    letter-spacing: -0.015em;
-    line-height: 1.1;
-    margin: 0;
-    max-width: 22ch;
-    color: var(--page-cream);
-  }
-  @media (prefers-color-scheme: light) {
-    .landing-h { color: var(--ink, #1a1a22); }
-  }
-  .landing-lede {
-    font-family: var(--font-body);
-    font-size: 1.0625rem;
-    line-height: 1.65;
-    color: var(--graphite);
-    max-width: 56ch;
-    margin: 0;
-  }
-  .landing-cta {
-    margin: 0.5rem 0;
-    font-family: var(--font-body);
-    font-size: 1.0625rem;
-  }
-  .landing-cta-primary {
-    color: var(--seal-red);
-    text-decoration: none;
-    border-bottom: 1px solid var(--seal-red);
-    padding-bottom: 1px;
-  }
-  .landing-cta-primary:hover {
-    background: color-mix(in oklab, var(--seal-red) 12%, transparent);
-  }
-  .landing-defs {
-    margin: 1rem 0 0;
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
-    font-family: var(--font-body);
-  }
-  .landing-defs > div {
-    display: grid;
-    grid-template-columns: 8rem minmax(0, 1fr);
-    gap: 1.25rem;
-  }
-  @media (max-width: 600px) {
-    .landing-defs > div { grid-template-columns: 1fr; gap: 0.25rem; }
-  }
-  .landing-defs dt {
-    font-family: var(--font-display);
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--page-cream);
-  }
-  @media (prefers-color-scheme: light) {
-    .landing-defs dt { color: var(--ink, #1a1a22); }
-  }
-  .landing-defs dd {
-    margin: 0;
-    color: var(--graphite);
-    font-size: 1rem;
-    line-height: 1.65;
-  }
-  .landing-defs dd em { color: var(--page-cream); font-style: italic; }
-  @media (prefers-color-scheme: light) {
-    .landing-defs dd em { color: var(--ink, #1a1a22); }
-  }
-  .landing-defs dd code {
-    background: rgb(255 255 255 / 0.05);
-    padding: 0.125em 0.375em;
-    font-family: var(--font-mono);
-    font-size: 0.875em;
-    color: var(--graphite);
-  }
-  @media (prefers-color-scheme: light) {
-    .landing-defs dd code { background: rgb(0 0 0 / 0.05); }
-  }
-  .landing-meta {
-    margin: 2rem 0 0;
-    font-family: var(--font-sans);
-    font-size: 13px;
-    color: var(--graphite);
-  }
-  .landing-meta a {
-    color: var(--graphite);
-    text-decoration: underline;
-    text-underline-offset: 3px;
-    text-decoration-color: var(--rule);
-  }
-  .landing-meta a:hover { color: var(--seal-red); text-decoration-color: var(--seal-red); }
-</style>
+      <hr class="rule" />
+
+      <section class="block">
+        <h2 class="block__h">v0.1 — what&rsquo;s next</h2>
+        <ul class="block__list">
+          <li>
+            Tiptap editor with the cream-paper writing surface — 66 characters
+            per line, no toolbar in the way, autosave to IndexedDB.
+          </li>
+          <li>
+            libsodium-sealed entries — encrypted at rest on the device,
+            seal status visible on every page.
+          </li>
+          <li>
+            Daily view + month calendar — jump to a date, see what you wrote
+            a year ago, no streak counters, no flame icons.
+          </li>
+          <li>
+            Optional Firestore sync for signed-in users — encrypted blobs only;
+            the server never sees plaintext.
+          </li>
+          <li>
+            Tag &amp; full-text search across local entries, plus an export-everything
+            button (Markdown zip) so the journal is always yours.
+          </li>
+        </ul>
+      </section>
+
+      <hr class="rule" />
+
+      <p class="track">
+        <a href="https://github.com/oriz-co/oriz-roam-journal-app">Track development &rarr;</a>
+      </p>
+    </main>
+
+    <style is:global>
+      html, body {
+        margin: 0;
+        padding: 0;
+        background: #faf6ef;
+        color: #15140f;
+        font-family: 'Inter Tight', system-ui, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+      .skip-link {
+        position: absolute;
+        left: -9999px;
+      }
+      .skip-link:focus {
+        left: 16px;
+        top: 16px;
+        background: #15140f;
+        color: #faf6ef;
+        padding: 8px 12px;
+        z-index: 200;
+      }
+    </style>
+
+    <style>
+      main {
+        max-width: 720px;
+        margin: 0 auto;
+        padding: clamp(2.5rem, 6vw, 5rem) 20px clamp(2rem, 5vw, 4rem);
+      }
+      .hero {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+      .hero__title {
+        font-family: 'Fraunces', Georgia, serif;
+        font-weight: 600;
+        font-size: clamp(3rem, 9vw, 5.5rem);
+        letter-spacing: -0.02em;
+        line-height: 0.95;
+        margin: 0;
+        color: #15140f;
+      }
+      .hero__tagline {
+        font-family: 'Inter Tight', system-ui, sans-serif;
+        font-size: clamp(1.0625rem, 2.2vw, 1.25rem);
+        color: #1a3a8f;
+        margin: 0;
+        font-weight: 500;
+        letter-spacing: -0.005em;
+      }
+      .hero__about {
+        font-family: 'Inter Tight', system-ui, sans-serif;
+        font-size: 1.0625rem;
+        line-height: 1.65;
+        color: #3a3a36;
+        max-width: 60ch;
+        margin: 0.75rem 0 0;
+      }
+
+      .rule {
+        border: 0;
+        border-top: 1px solid #15140f;
+        margin: 3rem 0;
+      }
+
+      .block__h {
+        font-family: 'Fraunces', Georgia, serif;
+        font-weight: 600;
+        font-size: 1.5rem;
+        letter-spacing: -0.01em;
+        margin: 0 0 1rem;
+        color: #15140f;
+      }
+      .block__list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.875rem;
+      }
+      .block__list li {
+        font-size: 1rem;
+        line-height: 1.6;
+        color: #3a3a36;
+        padding-left: 1.25rem;
+        position: relative;
+      }
+      .block__list li::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0.7em;
+        width: 6px;
+        height: 1px;
+        background: #15140f;
+      }
+      .block__list code {
+        font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+        font-size: 0.875em;
+        background: #efe9d8;
+        padding: 0.05em 0.35em;
+        color: #15140f;
+      }
+
+      .track {
+        margin: 2rem 0 0;
+        font-size: 0.9375rem;
+      }
+      .track a {
+        color: #1a3a8f;
+        text-decoration: none;
+        border-bottom: 1px solid #1a3a8f;
+        padding-bottom: 1px;
+      }
+      .track a:hover {
+        background: #1a3a8f;
+        color: #faf6ef;
+      }
+
+      @media (max-width: 640px) {
+        main { padding-inline: 18px; }
+        .hero__about { font-size: 1rem; }
+        .rule { margin: 2.25rem 0; }
+      }
+    </style>
+  </body>
+</html>
